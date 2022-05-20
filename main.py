@@ -9,6 +9,11 @@ ESPRESSO_PRICE = 1.50
 LATTE_PRICE = 2.50
 CAPPUCCINO_PRICE = 3.0
 
+machine_resources = [data.resources['water'], data.resources['milk'],
+                         data.resources['coffee']]
+
+print(machine_resources)
+
 
 def welcome_screen():
     print("Welcome to the Virtual Coffee Machine.")
@@ -38,26 +43,54 @@ def change(selection, payment):
     elif selection == "cappuccino" and payment >= CAPPUCCINO_PRICE:
         extra = int(payment - LATTE_PRICE)
         return extra
-    else: print("not enough coins")
+    else:
+        print("not enough coins")
 
 
-def target_drink (selection, payment):
+def target_drink(selection, payment, machine_resources):
     if selection == "espresso":
+        if machine_resources[0] < 50 or machine_resources[2] < 18:
+            print("Machine doesn't have enough resources to make an espresso")
+            print(f"*Gives {payment} back to you*")
+            return
+        else:
+            machine_resources[0] -= 50
+            machine_resources[1] -= 18
         remainder = change(selection, payment)
         print(f"Here is you espresso with your change being ${remainder}")
     elif selection == "latte":
+        if machine_resources[0] < 200 or machine_resources[1] < 150 or \
+                machine_resources[2] < 24:
+            print("Machine doesn't have enough resources to make a latte")
+            print(f"*Gives {payment} back to you*")
+            return
+        else:
+            machine_resources[0] -= 200
+            machine_resources[1] -= 150
+            machine_resources[2] -= 24
         remainder = change(selection, payment)
         print(f"Here is you latte with your change being ${remainder}")
     elif selection == "cappuccino":
+        if machine_resources[0] < 250 or machine_resources[1] < 100 or \
+                machine_resources[2] < 24:
+            print("Machine doesn't have enough resources to make a cappuccino")
+            print(f"*Gives {payment} back to you*")
+            return
+        else:
+            machine_resources[0] -= 250
+            machine_resources[1] -= 100
+            machine_resources[2] -= 24
         remainder = change(selection, payment)
         print(f"Here is you cappuccino with your change being ${remainder}")
 
+
 another = 'yes'
 while another == 'yes':
+    print(f"Current machine resources are {machine_resources}")
     selection = welcome_screen()
     payment = insert_coins()
     change(selection, payment)
-    target_drink(selection, payment)
+    target_drink(selection, payment, machine_resources)
     another = input("Would you like another drink? (type 'yes' or 'no'): ")
 
 print("Enjoy your coffee!")
